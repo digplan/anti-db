@@ -2,7 +2,7 @@
   "name": "anti-db",
   "description": "Plain old JS object that saves itself to disk",
   "url": "http://github.com/dpweb/anti-db/",
-  "keywords":
+  "keywords":[
     "util",
     "nodejs"
   ],
