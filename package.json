@@ -14,5 +14,6 @@
     "type": "git",
     "url": "git://github.com/dpweb/anti-db.git"
   },
-  "version": "0.0.2"
+  "main":"anti-db.js",
+  "version": "0.0.4"
 }
