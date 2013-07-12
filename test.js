@@ -1,10 +1,17 @@
-require('./anti-db.js');
 
-var someobj = _require('a.json');
-someobj.tests = 'NOW';
+require('./anti-db.js')(debug = 1);
 
-console.log(someobj);
+var parent = {}
+  , letters = ['a','b','c','d','e','f','g','h']
+  , current;
 
-setTimeout(console.log, 1000000);
+while(current = letters.shift()){
+	parent[current] = _require(current + '.json')
+	parent[current].when = new Date();
+}
 
+console.log(parent);
 // check your disk for a.json
+
+// uncomment this and Ctrl-C to make sure files are written
+// setTimeout(console.log, 1000000);

@@ -20,4 +20,6 @@ myarr.push(1);
 var myobj = _require('myobj.json', null, 10000);
 // save to disk every 10 sec. just in case..
 
+// Note, on Windows platform, an app that uses this will have to be ended with a Ctrl-C
+
 ````
