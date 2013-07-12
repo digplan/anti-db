@@ -26,6 +26,7 @@ module.exports = function(debug){
 			funcs.map(function(arr){
 					fs.writeFileSync(arr[0], JSON.stringify(arr[1], null, 4));
 			})
+			process.exit(1);
 		}
 	
 		if(safer) setInterval(fin, safer);
