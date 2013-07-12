@@ -32,6 +32,7 @@ module.exports = function(debug){
 		if(safer) setInterval(fin, safer);
 	
 		process.on('SIGINT', fin);
+		process.on('SIGTERM', fin);
 		process.on('exit', fin);
 	
 		return ob;
