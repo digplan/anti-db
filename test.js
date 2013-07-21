@@ -2,7 +2,7 @@
 require('./anti-db.js')(debug = 1);
 
 var parent = {}
-  , letters = ['a','b','c','d','e','f','g','h']
+  , letters = ['a','b','c']
   , current;
 
 while(current = letters.shift()){
