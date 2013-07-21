@@ -26,7 +26,7 @@ module.exports = function(debug){
 			funcs.map(function(arr){
 					fs.writeFileSync(arr[0], JSON.stringify(arr[1], null, 4));
 			})
-			// 
+			// This appears to ensure we see uncaught exception errors before exit
 			setTimeout(process.exit, 0);
 		}
 	
