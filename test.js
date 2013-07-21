@@ -11,7 +11,9 @@ while(current = letters.shift()){
 }
 
 console.log(parent);
-// check your disk for a.json
+// check your disk for a-h.json
 
-// uncomment this and Ctrl-C to make sure files are written
-// setTimeout(console.log, 1000000);
+// set up a running server, to make sure throw errors are printing to console
+require('quick-server')({port: 2222}, function(options, app){
+	throw Error('I printed to console OK');
+})
