@@ -26,8 +26,8 @@ module.exports = function(debug){
 			funcs.map(function(arr){
 					fs.writeFileSync(arr[0], JSON.stringify(arr[1], null, 4));
 			})
-			// For Non-Windows system, exit process
-			if(!process.platform.match(/^win/)) process.exit(1);
+			// 
+			setTimeout(process.exit, 0);
 		}
 	
 		if(safer) setInterval(fin, safer);
