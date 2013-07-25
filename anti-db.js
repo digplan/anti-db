@@ -19,7 +19,12 @@ module.exports = function(debug){
 	
 	global._require = function (fn, isArray, safer){
 	
-	  	var ob = fs.existsSync(fn) ? JSON.parse(fs.readFileSync(fn).toString()) : (isArray ? [] : {});
+		var ob = isArray ? [] : {};
+
+	  	if(fs.existsSync(fn)){
+	  		var s = fs.readFileSync(fn).toString();
+	  		if(s != '') ob = JSON.parse(s);
+	  	}
 
 		funcs.push([fn, ob]);
 		var fin = function(){
