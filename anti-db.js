@@ -1,20 +1,22 @@
-module.exports = function(debug){
-	/*
-		Win32 SIGINT assistance
-		http://stackoverflow.com/a/14861513/1308338
-	*/
-	var readLine = require ("readline");
-	if (process.platform === "win32"){
-	    var rl = readLine.createInterface({
-	        input: process.stdin,
-	        output: process.stdout
-	    });
-	    rl.on ("SIGINT", function (){
-	        process.emit("SIGINT");
-	        process.exit(1);
-	    });
+module.exports = function(periodical){
+
+	if(!periodical){
+		/*
+			Win32 SIGINT assistance
+			http://stackoverflow.com/a/14861513/1308338
+		*/
+		var readLine = require ("readline");
+		if (process.platform === "win32"){
+		    var rl = readLine.createInterface({
+		        input: process.stdin,
+		        output: process.stdout
+		    });
+		    rl.on ("SIGINT", function (){
+		        process.emit("SIGINT");
+		        process.exit(1);
+		    });
+		}
 	}
-	
 	var funcs = [], fs = require('fs');
 	
 	global._require = function (fn, isArray, safer){
@@ -37,10 +39,11 @@ module.exports = function(debug){
 	
 		if(safer) setInterval(fin, safer);
 	
-		process.on('SIGINT', fin);
-		process.on('SIGTERM', fin);
-		process.on('exit', fin);
-	
+		if(!periodical){
+			process.on('SIGINT', fin);
+			process.on('SIGTERM', fin);
+			process.on('exit', fin);
+		}
 		return ob;
 	}
 }
