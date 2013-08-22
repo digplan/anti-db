@@ -1,19 +1,20 @@
 
-require('./anti-db.js')(debug = 1);
+require('./anti-db.js')();
 
-var parent = {}
-  , letters = ['a','b','c']
-  , current;
+var a = _require('a.json');
+var b = _require('b.json');
+var c = _require('c.json', []);
 
-while(current = letters.shift()){
-	parent[current] = _require(current + '.json')
-	parent[current].when = new Date();
-}
+a.date = new Date();
+b.date = new Date();
+c.push(new Date());
 
-console.log(parent);
-// check your disk for a-h.json
+// check your disk for a-c.json
 
-// set up a running server, to make sure throw errors are printing to console
-require('quick-server')({port: 2823}, function(options, app){
-	throw Error('I printed to console OK');
-})
+// set up a running server, to check SIGINT and
+// make sure thrown errors are printing to console
+
+// CTRL-C to break this
+require('http').createServer(function(r, s){
+
+}).listen(8080);
