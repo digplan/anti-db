@@ -16,5 +16,4 @@ c.push(new Date());
 
 // CTRL-C to break this
 require('http').createServer(function(r, s){
-
 }).listen(8080);

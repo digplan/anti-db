@@ -1,6 +1,7 @@
 module.exports = function(periodical){
   
-  	var debug = process.env.debug ? console.log : function(){};
+  	var ef = function(){};
+  	var debug = process.env.debug ? console.log : ef;
 
 	if(!periodical){
 
@@ -30,10 +31,13 @@ module.exports = function(periodical){
 	  			ob = JSON.parse(s);
 	  		}
 	  	}
-		funcs.push([fn, ob]);
+		if(!periodical) funcs.push([fn, ob]);
 		if(safer){
-			debug('Autosave every', safer);
-			setInterval(save, safer);
+			debug(fn, 'autosave every', safer);
+			setInterval(function(){
+				debug('Saving', fn);
+				fs.writeFile(fn, JSON.stringify(ob, null, 4), ef);
+			}, safer);
 		}
 		return ob;
 	}
