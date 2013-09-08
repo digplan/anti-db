@@ -1,5 +1,8 @@
 
-require('./anti-db.js')(1);
+// Periodical mode does not save changes based on program exit, but
+// only periodically during the running of the program
+
+require('./anti-db.js')(/* periodical = */ true);
 
 var d = _require('d.json', null, 3000);
 d.date = new Date();

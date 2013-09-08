@@ -34,3 +34,22 @@ Will not attempt any saving to disk on SIGINT EXIT etc.., and just save to disk 
 require('anti-db')(1); // periodical mode
 var myobj = _require('myobj.json', null, 60000);  // save to disk every 1 minute
 ````
+
+### Windows systems
+A workaorund (using readline/STDIN) is used so the Windows platform will correctly
+handle a SIGINT (Ctrl-C) and save the data before programe exit.  As a result, programs that don't run continuous like a web server, should call process.exit explicity to end
+the program.
+
+````
+require('./anti-db.js')();
+
+var a = _require('a.json');
+var b = _require('b.json');
+var c = _require('c.json', []);
+
+a.date = new Date();
+b.date = new Date();
+c.push(new Date());
+
+process.exit(0);
+````
