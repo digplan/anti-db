@@ -1,3 +1,22 @@
+
+function model(){
+	return function(target) {
+	  require('harmony-reflect');
+	  return Proxy(target, {
+	    get: function(target, name) {
+	      if(name=='inspect') return target;
+
+	      if(name in target) return target[name];
+	      throw Error('Anti-db: ' + name + ' is not a valid property for model');
+	    },
+	    set: function(target, name, val) {
+	      if(name in target) return target[name] = val;
+	      throw Error('Anti-db: ' + name + ' is not a valid property for model');
+	    }
+	  });
+	}
+}
+
 module.exports = function(periodical){
   
   	var ef = function(){};
@@ -23,7 +42,17 @@ module.exports = function(periodical){
 	}
    
 	global._require = function (fn, isArray, safer){
-		var ob = isArray ? [] : {};
+		var tgt = ob = [];
+
+		if(!Array.isArray(isArray)){
+			tgt = ob = {};
+			if(undefined !== isArray){
+				debug('Object model was provided', isArray);
+				ob = model()(isArray);
+				tgt = ob.inspect;
+			}
+		}
+
 	  	if(fs.existsSync(fn)){
 	  		var s = fs.readFileSync(fn).toString();
 	  		if(s != ''){
@@ -31,7 +60,7 @@ module.exports = function(periodical){
 	  			ob = JSON.parse(s);
 	  		}
 	  	}
-		if(!periodical) funcs.push([fn, ob]);
+		if(!periodical) funcs.push([fn, tgt]);
 		if(safer){
 			debug(fn, 'autosave every', safer);
 			setInterval(function(){

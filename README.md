@@ -35,21 +35,15 @@ require('anti-db')(1); // periodical mode
 var myobj = _require('myobj.json', null, 60000);  // save to disk every 1 minute
 ````
 
-### Windows systems
-A workaorund (using readline/STDIN) is used so the Windows platform will correctly
-handle a SIGINT (Ctrl-C) and save the data before programe exit.  As a result, programs that don't run continuous like a web server, should call process.exit explicity to end
-the program.
+### Enforce model checking 
+You can specify a model when creating an object, so that properties not in the model cannot be used (will throw an error)   
 
 ````
-require('./anti-db.js')();
+// When using models, invoke node with --harmony to enable ES6 Proxies
+$ node --harmony
 
-var a = _require('a.json');
-var b = _require('b.json');
-var c = _require('c.json', []);
-
-a.date = new Date();
-b.date = new Date();
-c.push(new Date());
-
-process.exit(0);
+require('anti-db')(); // periodical mode
+var myobj = _require('myobj.json', {name:''});  // provided model for object
+myobj.name = 'Chris'; // ok
+myobj.age = 21; // =>> Error
 ````

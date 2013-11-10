@@ -2,7 +2,7 @@
   "name": "anti-db",
   "description": "Plain old JS object that saves itself to disk",
   "url": "http://github.com/dpweb/anti-db/",
-  "keywords":[
+  "keywords": [
     "util",
     "nodejs"
   ],
@@ -14,6 +14,6 @@
     "type": "git",
     "url": "git://github.com/dpweb/anti-db.git"
   },
-  "main":"anti-db.js",
-  "version": "0.1.4"
+  "main": "anti-db.js",
+  "version": "0.2.0"
 }
