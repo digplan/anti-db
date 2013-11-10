@@ -1,22 +1,3 @@
-
-function model(){
-	return function(target) {
-	  require('harmony-reflect');
-	  return Proxy(target, {
-	    get: function(target, name) {
-	      if(name=='inspect') return target;
-
-	      if(name in target) return target[name];
-	      throw Error('Anti-db: ' + name + ' is not a valid property for model');
-	    },
-	    set: function(target, name, val) {
-	      if(name in target) return target[name] = val;
-	      throw Error('Anti-db: ' + name + ' is not a valid property for model');
-	    }
-	  });
-	}
-}
-
 module.exports = function(periodical){
   
   	var ef = function(){};
@@ -41,15 +22,29 @@ module.exports = function(periodical){
 		}
 	}
    
+   	// call like this..
+
+   	// _require('./some.json');
+   	// _require('./anarray.json', []);
+   	// _require('./savedeveryminute.json', null, 60000);
+   	// _require('./enforcemodel.json', {name:''});
+   	// _require({'name': ''}); // no backing file, return obj
+
 	global._require = function (fn, isArray, safer){
 		var tgt = ob = [];
 
+		// not an array
 		if(!Array.isArray(isArray)){
 			tgt = ob = {};
-			if(undefined !== isArray){
-				debug('Object model was provided', isArray);
-				ob = model()(isArray);
+			if(typeof fn !== 'string' || typeof isArray === 'object'){
+				// model
+				debug('Object model was provided');
+				ob = model()(isArray || fn);
 				tgt = ob.inspect;
+			}
+			if(typeof fn !== 'string'){
+				debug('Returning modeled object, no backing file');
+				return ob;
 			}
 		}
 
@@ -74,7 +69,23 @@ module.exports = function(periodical){
 	var funcs = [], fs = require('fs');
 	var save = function(){
 			funcs.map(function(arr){
-					debug('Saving', arr[0]);
+					// make sure were saving targets and not proxies
+					if(Array.isArray(arr[1])){
+						var tgt = [];
+						arr[1].forEach(function(i){
+							if(i.isProxy){
+								tgt.push(i.inspect);
+							} else {
+								tgt.push(i);
+							}
+						})
+						arr[1] = tgt;
+					} else if(typeof arr[1] === 'object'){
+						for(i in arr[1]){
+							if(arr[1][i].isProxy) arr[1][i] = arr[1][i].inspect;
+						}
+					}
+					debug('Saving', arr[0], arr[1]);
 					fs.writeFileSync(arr[0], JSON.stringify(arr[1], null, 4));
 			})
 	}
@@ -100,5 +111,26 @@ module.exports = function(periodical){
 				debug('exit');
 				fin();
 			});
+	}
+
+	function model(){
+		return function(target) {
+		  require('harmony-reflect');
+		  return Proxy(target, {
+		    get: function(target, name) {
+		      if(name=='inspect') return target;
+		      if(name=='isProxy') return true;
+
+		      if(name in target) return target[name];
+		      save();
+		      throw Error('Anti-db: ' + name + ' is not a valid property for model');
+		    },
+		    set: function(target, name, val) {
+		      if(name in target) return target[name] = val;
+		      save();
+		      throw Error('Anti-db: ' + name + ' is not a valid property for model');
+		    }
+		  });
+		}
 	}
 }
