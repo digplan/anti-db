@@ -39,7 +39,7 @@ module.exports = function(periodical){
 			if(typeof fn !== 'string' || typeof isArray === 'object'){
 				// model
 				debug('Object model was provided');
-				ob = model()(isArray || fn);
+				ob = model(isArray || fn);
 				tgt = ob.inspect;
 			}
 			if(typeof fn !== 'string'){
@@ -52,7 +52,7 @@ module.exports = function(periodical){
 	  		var s = fs.readFileSync(fn).toString();
 	  		if(s != ''){
 	  			debug('loading', fn);
-	  			ob = JSON.parse(s);
+	  			tgt = ob = JSON.parse(s);
 	  		}
 	  	}
 		if(!periodical) funcs.push([fn, tgt]);
@@ -69,6 +69,8 @@ module.exports = function(periodical){
 	var funcs = [], fs = require('fs');
 	var save = function(){
 			funcs.map(function(arr){
+					debug('Prepping save', arr[0], arr[1]);
+
 					// make sure were saving targets and not proxies
 					if(Array.isArray(arr[1])){
 						var tgt = [];
@@ -113,8 +115,7 @@ module.exports = function(periodical){
 			});
 	}
 
-	function model(){
-		return function(target) {
+	function model(target) {
 		  require('harmony-reflect');
 		  return Proxy(target, {
 		    get: function(target, name) {
@@ -131,6 +132,5 @@ module.exports = function(periodical){
 		      throw Error('Anti-db: ' + name + ' is not a valid property for model');
 		    }
 		  });
-		}
 	}
 }
