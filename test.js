@@ -1,9 +1,12 @@
 
-require('./anti-db.js')();
+var fs = require('fs');
+fs.unlink('a.json'); fs.unlink('b.json'); fs.unlink('c.json');
 
-var a = _require('a.json');
-var b = _require('b.json');
-var c = _require('c.json', []);
+var antidb = require('./anti-db.js')();
+
+var a = antidb.obj('a.json');
+var b = antidb.obj('b.json', {name: 'Chris', age: 21});
+var c = antidb.obj('c.json', []);
 
 a.date = new Date();
 b.date = new Date();

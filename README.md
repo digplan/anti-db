@@ -3,47 +3,64 @@ anti-db
 
 Anti-db takes the idea of a database fronted by a memory cache and reverses it, for maximum performance.  The storage is a POJO (plain old JS object), which is saved to disk upon program exit.  Optionally, the data can be saved to disk periodically.
 
-Initializing an object from disk
-
-###_require('objname.json')   
+###Initializing an object from disk
 ````
-require('anti-db')();
-var myobj = _require('myobject.json');
- ==> {}
-
+var antidb = require('anti-db')();
+var myobj = antidb.obj('./some.json');
 myobj.hey = 'there';
-// no need to call save(), automatically saved to disk on exit ./myobject.json
+// no need to call save(), automatically saved to disk on exit ./some.json
 ````
 
 ### Use array instead of object
 ````
-var myarr = _require('myobject.json', []);
- ==> []
-myarr.push(1);
+var myarr = antidb.obj('./somearr.json', []);
+myarr.push(1970);
 ````
 
-### Save obj to disk periodically, just in case
+### Save obj to disk periodically, just to be safer
 ````
-var myobj = _require('myobj.json', null, 10000);  // every 10 sec.
+var antidb = require('anti-db')(10000);  // every 10 sec.
+var myobj = antidb.obj('./some.json');
+myobj.hey = 'there';
 ````
 
 ### Periodical mode 
 Will not attempt any saving to disk on SIGINT EXIT etc.., and just save to disk periodically.    
-
 ````
-require('anti-db')(1); // periodical mode
-var myobj = _require('myobj.json', null, 60000);  // save to disk every 1 minute
+var antidb = require('anti-db')(period = 10000, nosaveonexit = 1});  // every 10 sec.
+var myobj = antidb.obj('./some.json');
+myobj.hey = 'there';
 ````
 
-### Enforce model checking 
-You can specify a model when creating an object, so that properties not in the model cannot be used (will throw an error)   
-
+### Provide a default object / model and seal the object from further property additions
 ````
-// When using models, invoke node with --harmony to enable ES6 Proxies
-$ node --harmony
+var antidb = require('anti-db')();
+var myobj = antidb.obj('./some.json', {name: 'Chris', age: 21});
+````
 
-require('anti-db')(); // periodical mode
-var myobj = _require('myobj.json', {name:''});  // provided model for object
-myobj.name = 'Chris'; // ok
-myobj.age = 21; // =>> Error
+### Override loading and saving of objects - Use as cache for other data sources
+````
+// Using a CSV as backing file
+
+var antidb = require('anti-db')();
+antidb.loadFunc = function(name, type){
+	var csv_arr = fs.readFileSync(name).toString().split(/\n/);
+	// put into JSON object
+	return obj;
+}
+antidb.saveFunc = function(name, o){
+	require('json2csv')({data: json, fields: ['car', 'price', 'color']}, function(err, csv) {
+	  if (err) console.log(err);
+	  fs.writeFile('file.csv', csv, function(err) {
+	    if (err) throw err;
+	    console.log('file saved');
+	  });
+	});
+}
+````
+
+### Debug mode
+Do this when running your app..
+````
+$ debug=1 node myapp
 ````
