@@ -22,18 +22,22 @@ module.exports = function(period, nosaveonexit){
    		},
    		funcs: [],
    		obj: function(name, type){
-   			var ob = this.loadFunc(name, type) || [];
-   			if(!Array.isArray(ob)){
-   				ob = type;
-   				if(Object.keys(type).length === 0) Object.seal(ob);
-   			}
+   			type = type || {};
+   			var ob = this.loadFunc(name, type);
+   			if(!ob){
+   				if(Array.isArray(type)) ob = [];
+   				if(!Array.isArray(type)) ob = {};
+   				if(!Array.isArray(type) && Object.keys(type).length !== 0) ob = type;
+   			} 
+			if(Object.keys(type).length !== 0) Object.seal(ob);
    			if(!nosaveonexit) this.funcs.push([name, ob]);
    			if(period){
-	   			debug(fn, 'autosave every', safer);
+	   			debug(name, 'autosave every', period);
+	   			var that = this;
 				setInterval(function(){
 					debug('Saving', name, ob);
-					this.saveFunc(name, ob);
-				}, params.period);
+					that.saveFunc(name, ob);
+				}, period);
 			}
    			return ob;
    		},
