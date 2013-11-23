@@ -1,6 +1,12 @@
 
 var fs = require('fs');
-fs.unlink('a.json'); fs.unlink('b.json'); fs.unlink('c.json');
+try{
+	fs.unlinkSync('a.json'); 
+	fs.unlinkSync('b.json'); 
+	fs.unlinkSync('c.json'); 
+	fs.unlinkSync('d.json'); 
+	fs.unlinkSync('e.json');
+} catch(e){}
 
 var antidb = require('./anti-db.js')();
 
