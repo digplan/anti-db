@@ -1,5 +1,4 @@
-module.exports = function(period, nosaveonexit){
-  
+var anti = function(period, nosaveonexit){
   	var ef = function(){},
   		funcs = [], 
   		fs = require('fs'),
@@ -8,7 +7,7 @@ module.exports = function(period, nosaveonexit){
    	var obj = {
    		loadFunc: function(name, type){
    			if(fs.existsSync(name)){
-   				var s = fs.readFileSync(name).toString();
+   				var s = fs.readFileSeync(name).toString();
 		  		if(s != ''){
 		  			debug('loading', name);
 		  			return JSON.parse(s);
@@ -95,3 +94,17 @@ module.exports = function(period, nosaveonexit){
 
 	return obj;
 }
+
+// $ node anti-db 127.0.0.1 8080 10000 0
+
+function shellVersion(){
+	var args = process.argv.slice(2),
+		antidb = anti(args[2], args[3]);
+
+	require('./buf.js').server(args[0], args[1], function(s){
+		if(s==='')
+	})
+}
+
+__filename !== require.main.filename ?
+        module.exports = anti : shellVersion();
